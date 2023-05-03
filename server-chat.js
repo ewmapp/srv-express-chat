@@ -20,7 +20,7 @@ const port = process.env.PORT || 50002
 const server = http.createServer()
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST']
   }
 })
