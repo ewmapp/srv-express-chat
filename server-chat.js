@@ -11,15 +11,15 @@ const dotenv = require('dotenv').config({ path: './.env' })
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  port: process.env.DB_PORT || 50002
+  port: process.env.DB_PORT
 } */
 
 const dbConfig = {
   host: process.env.DB_HOST,
-  user: 'smartht',
-  password: 'AVNS_1Om-Zz4iBSsKNY0UXR9',
-  database: 'defaultdb',
-  port: '25060'
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port: process.env.DB_PORT
 }
 
 // Cria a conexão com o banco de dados
@@ -240,5 +240,4 @@ io.on('connection', socket => {
 // Inicia o servidor
 server.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`)
-  console.log(process.env.DB_HOST)
 })
