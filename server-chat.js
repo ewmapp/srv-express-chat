@@ -21,7 +21,8 @@ const server = http.createServer()
 const io = new Server(server, {
   cors: {
     origin: 'https://conferencialivresvsa.com.br',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 })
 
