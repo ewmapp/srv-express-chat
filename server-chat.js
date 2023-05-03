@@ -15,7 +15,7 @@ const dotenv = require('dotenv').config({ path: './.env' })
 } */
 
 const dbConfig = {
-  host: 'db-mysql-nyc1-chat-do-user-2678382-0.b.db.ondigitalocean.com',
+  host: process.env.DB_HOST,
   user: 'smartht',
   password: 'AVNS_1Om-Zz4iBSsKNY0UXR9',
   database: 'defaultdb',
@@ -240,5 +240,5 @@ io.on('connection', socket => {
 // Inicia o servidor
 server.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`)
-  console.log(process.env.PORTRUN)
+  console.log(process.env.DB_HOST)
 })
