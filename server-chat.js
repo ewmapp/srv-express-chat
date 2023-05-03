@@ -240,5 +240,5 @@ io.on('connection', socket => {
 // Inicia o servidor
 server.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`)
-  console.log(`${PORTRUN}`)
+  console.log(process.env.PORTRUN)
 })
