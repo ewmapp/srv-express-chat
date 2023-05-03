@@ -20,7 +20,7 @@ const port = process.env.PORT || 50002
 const server = http.createServer()
 const io = new Server(server, {
   cors: {
-    origin: 'https://conferencialivresvsa.com.br, http://localhost:5173',
+    origin: '*',
     methods: ['GET', 'POST']
   }
 })
