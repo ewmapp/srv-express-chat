@@ -15,11 +15,11 @@ const dotenv = require('dotenv').config({ path: './.env' })
 } */
 
 const dbConfig = {
-  host: ${_self.HOSTNAME},
-  user: ${_self.USERNAME},
-  password: ${_self.PASSWORD},
-  database: ${_self.DATABASE},
-  port: ${_self.PORT}
+  host: ${db-mysql-nyc1-chat.HOSTNAME},
+  user: ${db-mysql-nyc1-chat.USERNAME},
+  password: ${db-mysql-nyc1-chat.PASSWORD},
+  database: ${db-mysql-nyc1-chat.DATABASE},
+  port: ${db-mysql-nyc1-chat.PORT}
 }
 
 // Cria a conexão com o banco de dados
