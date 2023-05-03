@@ -6,19 +6,27 @@ const path = require('path')
 const dotenv = require('dotenv').config({ path: './.env' })
 
 // Configurações do banco de dados
-const dbConfig = {
+/* const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  port: process.env.DB_PORT
+  port: process.env.DB_PORT || 50002
+} */
+
+const dbConfig = {
+  host: ${_self.HOSTNAME},
+  user: ${_self.USERNAME},
+  password: ${_self.PASSWORD},
+  database: ${_self.DATABASE},
+  port: ${_self.PORT}
 }
 
 // Cria a conexão com o banco de dados
 const db = mysql.createConnection(dbConfig)
 
 // Cria o servidor HTTP e passa-o para o construtor Server do socket.io
-const port = process.env.PORT
+const port = process.env.PORT || 50002
 const server = http.createServer()
 const io = new Server(server, {
   cors: {
