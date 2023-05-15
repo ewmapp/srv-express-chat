@@ -136,7 +136,14 @@ io.on('connection', socket => {
     console.log(`Usuário ${author_name} entrou na sala ${room}`)
     // Verifica se já existe um usuário com o mesmo author_id na sala
     try {
-      const existingUser = await getUserByAuthorIdAndRoom(author_id, room)
+      socket.join(room)
+      socket.to(room).emit('userJoined', {
+        author_id: author_id,
+        author_name: author_name,
+        author_msg: 'conectou-se'
+      })
+      await addUserToDatabase(author_id, author_name, room, socket.id)
+      /* const existingUser = await getUserByAuthorIdAndRoom(author_id, room)
       if (existingUser.length > 0) {
         console.log('Usuário já conectado na sala')
       } else {
@@ -147,7 +154,7 @@ io.on('connection', socket => {
           author_name: author_name,
           author_msg: 'conectou-se'
         })
-      }
+      } */
     } catch (err) {
       console.error(err)
     }
