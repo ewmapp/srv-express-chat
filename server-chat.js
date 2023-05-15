@@ -47,6 +47,19 @@ db.query(`
   )
 `)
 
+// Cria a tabela 'messages' no banco de dados (se ela não existir)
+db.query(`
+  CREATE TABLE IF NOT EXISTS messages (
+    id INT NOT NULL AUTO_INCREMENT,
+    author_id VARCHAR(255) NOT NULL,
+    author_name VARCHAR(255) NOT NULL,
+    author_msg TEXT NOT NULL,
+    room VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+  )
+`)
+
 // Funções auxiliares
 async function getUserByAuthorIdAndRoom(author_id, room) {
   return new Promise((resolve, reject) => {
@@ -128,6 +141,22 @@ async function countUserFromRoom(room) {
   })
 }
 
+async function insertMessage(author_id, author_name, author_msg, room) {
+  return new Promise((resolve, reject) => {
+    db.query(
+      'INSERT INTO messages (author_id, author_name, author_msg, room) VALUES (?, ?, ?, ?)',
+      [author_id, author_name, author_msg, room],
+      (error, results) => {
+        if (error) {
+          reject(error)
+          return
+        }
+        resolve(results)
+      }
+    )
+  })
+}
+
 const rooms = new Map()
 
 io.on('connection', socket => {
@@ -161,15 +190,20 @@ io.on('connection', socket => {
 
   // Quando o cliente envia uma mensagem
   socket.on('newMessage', ({ author_id, author_name, author_msg, room }) => {
-    // Envia a mensagem para a sala
-    /* io.to(room).emit('receivedMessage', {
-      author_id: author_id,
-      author_name: author_name,
-      author_msg: author_msg
-    }) */
+    try {
+      // Envia a mensagem para a sala
+      io.to(room).emit('receivedMessage', {
+        author_id: author_id,
+        author_name: author_name,
+        author_msg: author_msg
+      })
+      await insertMessage(author_id, author_name, author_msg, room)
+    } catch (err) {
+      console.error(err)
+    }
 
     // Encontra o usuário que enviou a mensagem
-    db.query(
+    /* db.query(
       'SELECT * FROM users WHERE socket_id = ?',
       [socket.id],
       (err, results) => {
@@ -184,7 +218,7 @@ io.on('connection', socket => {
           author_msg: author_msg
         })
       }
-    )
+    ) */
   })
 
   // Define o evento de saída de uma sala
