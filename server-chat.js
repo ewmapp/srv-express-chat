@@ -131,10 +131,8 @@ async function countUserFromRoom(room) {
 const rooms = new Map()
 
 io.on('connection', socket => {
-  // Quando o cliente entra em uma nova sala
   socket.on('joinRoom', async ({ author_id, author_name, room }) => {
-    console.log(`Usuário ${author_name} entrou na sala ${room}`)
-    // Verifica se já existe um usuário com o mesmo author_id na sala
+    //console.log(`Usuário ${author_name} entrou na sala ${room}`)
     try {
       socket.join(room)
       socket.to(room).emit('userJoined', {
@@ -143,6 +141,7 @@ io.on('connection', socket => {
         author_msg: 'conectou-se'
       })
       await addUserToDatabase(author_id, author_name, room, socket.id)
+      // Verifica se já existe um usuário com o mesmo author_id na sala
       /* const existingUser = await getUserByAuthorIdAndRoom(author_id, room)
       if (existingUser.length > 0) {
         console.log('Usuário já conectado na sala')
@@ -194,7 +193,25 @@ io.on('connection', socket => {
       // Sai da sala
       socket.leave(room)
       // Envia uma mensagem para a sala informando que um usuário saiu
-      socket.to(room).emit('userLeave', `Usuário saiu da sala`)
+      db.query(
+        'SELECT * FROM users WHERE socket_id = ?',
+        [socket.id],
+        (error, results) => {
+          if (error) {
+            console.error(error)
+            return
+          }
+          if (results.length > 0) {
+            const user = results[0]
+            io.to(user.room).emit('userLeave', {
+              author_id: user.author_id,
+              author_name: user.author_name,
+              author_msg: 'saiu da sala'
+            })
+          }
+        }
+      )
+      //socket.to(room).emit('userLeave', `Usuário saiu da sala`)
       // Remove o usuário da sala no banco de dados
       await removeUserFromRoom(socket.id, room)
     } catch (err) {
@@ -234,7 +251,6 @@ io.on('connection', socket => {
   // Total de usuários online na sala
   socket.on('totalUsers', async room => {
     // Total de usuários na sala
-    console.log('totalUsers')
     try {
       const res = await countUserFromRoom(room)
       io.to(room).emit('onlineRoom', res[0].total)
