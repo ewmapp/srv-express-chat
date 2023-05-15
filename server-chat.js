@@ -190,16 +190,16 @@ io.on('connection', socket => {
 
   // Define o evento de saída de uma sala
   socket.on('leaveRoom', async room => {
-    // Remove o usuário do banco de dados
     try {
+      // Sai da sala
+      socket.leave(room)
+      // Envia uma mensagem para a sala informando que um usuário saiu
+      socket.to(room).emit('userLeave', `Usuário saiu da sala`)
+      // Remove o usuário da sala no banco de dados
       await removeUserFromRoom(socket.id, room)
     } catch (err) {
       console.error(err)
     }
-    // Sai da sala
-    socket.leave(room)
-    // Envia uma mensagem para a sala informando que um usuário saiu
-    socket.to(room).emit('userLeave', `Usuário saiu da sala`)
   })
 
   // Quando o cliente se desconecta
