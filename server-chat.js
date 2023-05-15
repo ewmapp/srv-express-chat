@@ -189,21 +189,23 @@ io.on('connection', socket => {
   })
 
   // Quando o cliente envia uma mensagem
-  socket.on('newMessage', ({ author_id, author_name, author_msg, room }) => {
-    try {
-      // Envia a mensagem para a sala
-      io.to(room).emit('receivedMessage', {
-        author_id: author_id,
-        author_name: author_name,
-        author_msg: author_msg
-      })
-      await insertMessage(author_id, author_name, author_msg, room)
-    } catch (err) {
-      console.error(err)
-    }
+  socket.on(
+    'newMessage',
+    async ({ author_id, author_name, author_msg, room }) => {
+      try {
+        // Envia a mensagem para a sala
+        io.to(room).emit('receivedMessage', {
+          author_id: author_id,
+          author_name: author_name,
+          author_msg: author_msg
+        })
+        await insertMessage(author_id, author_name, author_msg, room)
+      } catch (err) {
+        console.error(err)
+      }
 
-    // Encontra o usuário que enviou a mensagem
-    /* db.query(
+      // Encontra o usuário que enviou a mensagem
+      /* db.query(
       'SELECT * FROM users WHERE socket_id = ?',
       [socket.id],
       (err, results) => {
@@ -219,7 +221,8 @@ io.on('connection', socket => {
         })
       }
     ) */
-  })
+    }
+  )
 
   // Define o evento de saída de uma sala
   socket.on('leaveRoom', async room => {
